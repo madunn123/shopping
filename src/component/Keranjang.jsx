@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react'
 import { MdDelete } from 'react-icons/md';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 
-export default function Keranjang({ checkBuyWislist, totalPrice, initialProducts, incrementCount, decrementCount, removeKeranjang, handleInputCount }) {
+export default function Keranjang({ selectAllWislist, checkBuyWislist, totalPrice, initialProducts, incrementCount, decrementCount, removeKeranjang, handleInputCount }) {
     const priceChecked = initialProducts.filter((product) => product.wislist).length;
 
     return (
@@ -22,6 +22,7 @@ export default function Keranjang({ checkBuyWislist, totalPrice, initialProducts
                                 type="checkbox"
                                 id="select-all"
                                 className="w-4 h-4 accent-green-500"
+                                onChange={() => selectAllWislist()}
                             />
                             <span className="duration-500 group-hover:text-slate-200">
                                 pilih semua
@@ -61,6 +62,7 @@ export default function Keranjang({ checkBuyWislist, totalPrice, initialProducts
                                                     type="checkbox"
                                                     className="w-4 h-4 accent-green-500"
                                                     onChange={() => checkBuyWislist(prodct.id)}
+                                                    checked={prodct.wislist}
                                                 />
                                                 <span className="text-slate-400">
                                                     {prodct.location}

@@ -115,6 +115,19 @@ export default function Shoppings() {
         }))
     }
 
+    const selectAllWislist = () => {
+        setProducts(products.map((product) => {
+            if (product.keranjang) {
+                return {
+                    ...product,
+                    wislist: !product.wislist
+                };
+            } else {
+                return product;
+            }
+        }))
+    }
+
     useEffect(() => {
         calculateTotalPrice();
     }, [products])
@@ -159,6 +172,7 @@ export default function Shoppings() {
                         totalPrice={totalPrice}
                         handleInputCount={handleInputCount}
                         checkBuyWislist={checkBuyWislist}
+                        selectAllWislist={selectAllWislist}
                     />
                 </div>
             </div>
