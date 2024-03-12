@@ -1,29 +1,67 @@
-import React from 'react'
-import Navigation from './components/Navigation'
-import NoteForm from './components/NoteForm'
-import NoteList from './components/NoteList'
-import { NoteProvider } from './contexts/NoteContext'
-import useNotes from './hooks/useNotes'
-import { getInitialData } from './utils'
+import React from 'react';
+
+import { useNotes } from './hooks/useNotes';
+
+import FormNotes from './components/FormNotes';
+import NoteList from './components/NoteList';
+import Navbar from './components/Navbar';
 
 export default function App() {
-    const notesValue = useNotes(getInitialData());
+  const {
+    openDialog,
+    setOpenDialog,
+    handleAddNewNotes,
+    notesFilter,
+    handleDeleteNotes,
+    handleArchiveNotes,
+    handleSearchNotes,
+    handleEditNotes,
+  } = useNotes();
 
-    return (
-        <NoteProvider value={notesValue}>
-            <Navigation />
+  return (
+    <>
+      <div className="bg-slate-900 h-[100vh] flex flex-col gap-10 w-[100vw] p-10 overflow-hidden text-slate-600 overflow-y-scroll">
+        <Navbar handleSearchNotes={handleSearchNotes} />
 
-            <div className="py-10 flex flex-col xl:gap-20">
-                <NoteForm />
-
-                <div className="flex flex-col gap-4">
-                    <h1 className='text-xl text-center uppercase'>Catatan Aktif</h1>
-                    <NoteList />
-
-                    <h1 className='text-xl text-center uppercase'>Catatan Arsip</h1>
-                    <NoteList archived />
-                </div>
+        <section className="container flex-none mx-auto note-list">
+          <div className="flex flex-col gap-4">
+            <div className="flex justify-end">
+              <button
+                type="button"
+                className="p-2 text-sm capitalize duration-500 bg-green-500 rounded-md shadow-sm cursor-pointer font-title shadow-green-900 hover:text-slate-200 hover:bg-green-700 text-slate-900"
+                onClick={() => setOpenDialog(!openDialog)}
+              >
+                tambah note baru
+              </button>
             </div>
-        </NoteProvider>
-    )
+
+            <div className="flex flex-col gap-10">
+              <NoteList
+                titleNotes="Catatan Aktif"
+                notesFilter={notesFilter}
+                handleDeleteNotes={handleDeleteNotes}
+                handleArchiveNotes={handleArchiveNotes}
+                handleEditNotes={handleEditNotes}
+              />
+              <NoteList
+                titleNotes="Arsip catatan"
+                archived
+                notesFilter={notesFilter}
+                handleArchiveNotes={handleArchiveNotes}
+                handleDeleteNotes={handleDeleteNotes}
+                handleEditNotes={handleEditNotes}
+              />
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {openDialog && (
+      <FormNotes
+        onHide={() => setOpenDialog(!openDialog)}
+        handleAddNewNotes={handleAddNewNotes}
+      />
+      )}
+    </>
+  );
 }

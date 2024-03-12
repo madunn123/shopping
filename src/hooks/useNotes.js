@@ -1,56 +1,55 @@
-import { useState } from "react";
+import { useReducer, useState } from 'react';
+import { notesReducer } from '../reducer/notesReducer';
+import { getInitialData } from '../utils';
 
-const useNotes = (initialValue = []) => {
-    const [notes, setNotes] = useState(initialValue);
-    const [keyword, setKeyword] = useState('');
+export function useNotes() {
+  const [state, dispatch] = useReducer(notesReducer, getInitialData());
+  const [openDialog, setOpenDialog] = useState(false);
+  const [keyword, setKeyword] = useState('');
 
-    const addNotes = (note) => {
-        const newNote = {
-            id: Date.now(),
-            ...note,
-            createdAt: new Date().toISOString(),
-            archived: false,
-        }
-
-        setNotes([newNote, ...notes]);
-    }
-
-    const deleteNote = (noteId) => {
-        setNotes(notes?.filter((note) => note?.id !== noteId));
-    }
-
-    const noteArchived = (noteId) => {
-        setNotes(notes.map((note) => {
-            if (note?.id === noteId) {
-                return {
-                    ...note,
-                    archived: !note?.archived,
-                }
-            }
-
-            return note;
-        }))
-    }
-
-    const searchNote = (_keyword) => {
-        setKeyword(_keyword);
-    };
-
-    const filteredNotes = (archived = false) => notes.filter((note) => {
-        const title = note?.title.toLowerCase();
-        const keywordLowerCase = keyword?.toLowerCase();
-
-        return note?.archived === archived && title?.includes(keywordLowerCase);
+  const handleAddNewNotes = (notes) => {
+    dispatch({
+      type: 'add_notes',
+      noteTitle: notes.title,
+      noteBody: notes.body,
     });
+  };
 
-    return {
-        filteredNotes,
-        addNotes,
-        deleteNote,
-        noteArchived,
-        searchNote,
-        keyword,
-    };
+  const handleDeleteNotes = (noteId) => dispatch({
+    type: 'delete_notes',
+    id: noteId,
+  });
+
+  const handleArchiveNotes = (noteId) => dispatch({
+    type: 'archive_notes',
+    id: noteId,
+  });
+
+  const handleSearchNotes = (_keyword) => {
+    setKeyword(_keyword);
+  };
+
+  const handleEditNotes = (noteId, notes) => {
+    dispatch({
+      type: 'edit_notes',
+      id: noteId,
+      newTitle: notes.title,
+      newBody: notes.body,
+    });
+  };
+
+  const notesFilter = (archived = false) => state.filter((notes) => notes.archived === archived && notes.title.toLowerCase().includes(keyword.toLowerCase()));
+
+  return {
+    state,
+    dispatch,
+    setOpenDialog,
+    openDialog,
+    handleAddNewNotes,
+    notesFilter,
+    handleDeleteNotes,
+    handleArchiveNotes,
+    handleSearchNotes,
+    handleEditNotes,
+  };
 }
-
-export default useNotes;
