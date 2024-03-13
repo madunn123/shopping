@@ -5,6 +5,7 @@ import { useNotes } from './hooks/useNotes';
 import FormNotes from './components/FormNotes';
 import NoteList from './components/NoteList';
 import Navbar from './components/Navbar';
+import { Link } from 'react-router-dom';
 
 export default function App() {
   const {
@@ -54,6 +55,8 @@ export default function App() {
             </div>
           </div>
         </section>
+
+        <Link to="/test">testes</Link>
       </div>
 
       {openDialog && (
